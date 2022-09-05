@@ -106,10 +106,6 @@ services:
 
 
   # https://hub.docker.com/r/grafana/grafana
-  # https://grafana.com/docs/grafana/latest/administration/configure-docker/
-  # https://grafana.com/docs/grafana/latest/administration/configuration/#configure-with-environment-variables
-  # https://grafana.com/docs/grafana/latest/administration/provisioning/
-  # https://github.com/grafana/grafana/blob/main/devenv
   grafana:
     container_name: grafana
     image: grafana/grafana
@@ -146,18 +142,30 @@ x-volume-driver-opts: &volume-driver-opts
   o: bind
 
 volumes:
-  influxdb-data:
-    name: influxdb-data
+  prometheus-data:
+    name: prometheus-data
     <<: *volume
     driver_opts:
       <<: *volume-driver-opts
-      device: ${DATAPATH?Variable DATAPATH not set}/influxdb/data
-  influxdb-entrypoint:
-    name: influxdb-entrypoint
+      device: ${DATAPATH?Variable DATAPATH not set}/prometheus/data
+  prometheus-provisioning:
+    name: prometheus-provisioning
     <<: *volume
     driver_opts:
       <<: *volume-driver-opts
-      device: ${DATAPATH?Variable DATAPATH not set}/influxdb/entrypoint
+      device: ${DATAPATH?Variable DATAPATH not set}/prometheus/provisioning
+  alertmanager-data:
+    name: alertmanager-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/alertmanager/data
+  alertmanager-provisioning:
+    name: alertmanager-provisioning
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/alertmanager/provisioning
   grafana-data:
     name: grafana-data
     <<: *volume
