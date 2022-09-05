@@ -1,0 +1,200 @@
+version: '3.8'
+
+x-prometheus-labels: &prometheus-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=monitoring
+    - traefik.http.routers.prometheus-http.rule=Host(`prometheus.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable not set}`)
+    - traefik.http.routers.prometheus-http.entrypoints=http
+    #- traefik.http.routers.prometheus-http.middlewares=admin-auth
+    - traefik.http.routers.prometheus-http.service=prometheus
+    - traefik.http.routers.prometheus-http.middlewares=https-redirect
+    - traefik.http.routers.prometheus-https.rule=Host(`prometheus.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable not set}`)
+    - traefik.http.routers.prometheus-https.entrypoints=https
+    - traefik.http.routers.prometheus-https.middlewares=admin-auth
+    - traefik.http.routers.prometheus-https.tls=true
+    - traefik.http.routers.prometheus-https.service=prometheus
+    - traefik.http.routers.prometheus-https.tls.certresolver=le
+    - traefik.http.services.prometheus.loadbalancer.server.port=9090
+
+x-alertmanager-labels: &alertmanager-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=monitoring
+    - traefik.http.routers.alertmanager-http.rule=Host(`alertmanager.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable not set}`)
+    - traefik.http.routers.alertmanager-http.entrypoints=http
+    #- traefik.http.routers.alertmanager-http.middlewares=admin-auth
+    - traefik.http.routers.alertmanager-http.service=alertmanager
+    - traefik.http.routers.alertmanager-http.middlewares=https-redirect
+    - traefik.http.routers.alertmanager-https.rule=Host(`alertmanager.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable not set}`)
+    - traefik.http.routers.alertmanager-https.entrypoints=https
+    - traefik.http.routers.alertmanager-https.middlewares=admin-auth
+    - traefik.http.routers.alertmanager-https.tls=true
+    - traefik.http.routers.alertmanager-https.service=alertmanager
+    - traefik.http.routers.alertmanager-https.tls.certresolver=le
+    - traefik.http.services.alertmanager.loadbalancer.server.port=9093
+
+x-influxdb-labels: &influxdb-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=monitoring
+    - traefik.http.routers.influxdb-http.rule=Host(`influxdb.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable not set}`)
+    - traefik.http.routers.influxdb-http.entrypoints=http
+    #- traefik.http.routers.influxdb-http.middlewares=admin-auth
+    - traefik.http.routers.influxdb-http.service=influxdb
+    - traefik.http.routers.influxdb-http.middlewares=https-redirect
+    - traefik.http.routers.influxdb-https.rule=Host(`influxdb.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable not set}`)
+    - traefik.http.routers.influxdb-https.entrypoints=https
+    #- traefik.http.routers.influxdb-https.middlewares=admin-auth
+    - traefik.http.routers.influxdb-https.tls=true
+    - traefik.http.routers.influxdb-https.service=influxdb
+    - traefik.http.routers.influxdb-https.tls.certresolver=le
+    - traefik.http.services.influxdb.loadbalancer.server.port=8086
+
+x-grafana-labels: &grafana-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=monitoring
+    - traefik.http.routers.grafana-http.rule=Host(`grafana.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable not set}`)
+    - traefik.http.routers.grafana-http.entrypoints=http
+    #- traefik.http.routers.grafana-http.middlewares=admin-auth
+    - traefik.http.routers.grafana-http.service=grafana
+    - traefik.http.routers.grafana-http.middlewares=https-redirect
+    - traefik.http.routers.grafana-https.rule=Host(`grafana.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable not set}`)
+    - traefik.http.routers.grafana-https.entrypoints=https
+    #- traefik.http.routers.grafana-https.middlewares=admin-auth
+    - traefik.http.routers.grafana-https.tls=true
+    - traefik.http.routers.grafana-https.service=grafana
+    - traefik.http.routers.grafana-https.tls.certresolver=le
+    - traefik.http.services.grafana.loadbalancer.server.port=3000
+
+x-service: &service
+  logging:
+    driver: json-file
+    options:
+      max-size: "100m"
+      max-file: "2"
+  restart: always
+  networks:
+    - monitoring
+
+services:
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
+      <<: *prometheus-labels
+    <<: *prometheus-labels
+    <<: *service
+    volumes:
+      - prometheus-provisioning:/etc/prometheus/
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      
+  alertmanager:
+    container_name: alertmanager
+    image: prom/alertmanager
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
+      <<: *alertmanager-labels
+    <<: *alertmanager-labels
+    <<: *service
+    volumes:
+      - alertmanager-provisioning:/etc/alertmanager/
+      - alertmanager-data:/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+
+
+  # https://hub.docker.com/r/grafana/grafana
+  # https://grafana.com/docs/grafana/latest/administration/configure-docker/
+  # https://grafana.com/docs/grafana/latest/administration/configuration/#configure-with-environment-variables
+  # https://grafana.com/docs/grafana/latest/administration/provisioning/
+  # https://github.com/grafana/grafana/blob/main/devenv
+  grafana:
+    container_name: grafana
+    image: grafana/grafana
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
+      <<: *grafana-labels
+    <<: *grafana-labels
+    <<: *service
+    volumes:
+      - grafana-provisioning:/etc/grafana/provisioning
+      - grafana-data:/var/lib/grafana
+    environment:
+      GF_INSTALL_PLUGINS: grafana-clock-panel
+      GF_SECURITY_ADMIN_PASSWORD: ${PASSWORD?Variable PASSWORD not set}
+      GF_SECURITY_ADMIN_USER: ${USERNAME?Variable USERNAME not set}
+      GF_SECURITY_SECRET_KEY: ${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
+      GF_SERVER_ROOT_URL: https://grafana.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable not set}
+      GF_SERVER_ENABLE_GZIP: "true"
+      GF_SECURITY_COOKIE_SECURE: "true"
+      GF_SNAPSHOTS_EXTERNAL_ENABLED: "false"
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    user: root
+
+
+x-volume: &volume
+  driver: local
+x-volume-driver-opts: &volume-driver-opts
+  type: none
+  o: bind
+
+volumes:
+  influxdb-data:
+    name: influxdb-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/influxdb/data
+  influxdb-entrypoint:
+    name: influxdb-entrypoint
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/influxdb/entrypoint
+  grafana-data:
+    name: grafana-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/grafana/data
+  grafana-provisioning:
+    name: grafana-provisioning
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/grafana/provisioning
+
+x-network: &network
+  external: true
+
+networks:
+  monitoring:
+    name: monitoring
+    <<: *network
+  database:
+    name: database
+    <<: *network

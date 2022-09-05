@@ -1,0 +1,26 @@
+route:
+  receiver: 'maildev'
+
+receivers:
+  - name: 'maildev'
+    email_configs:
+        # Whether to notify about resolved alerts.
+      - send_resolved: false
+        # The email address to send notifications to.
+        to: no.body@c2s.fr
+        # The sender's address.
+        from: no.body@c2s.fr
+        
+        # The SMTP host through which emails are sent.
+        smarthost: maildev.c2s-bouygues.dev
+
+        # SMTP authentication information.
+        auth_username: emailing@c2s-bouygues.dev
+        auth_password: MDJkNGE5MTE4MjU0ZjE3OTczY
+
+        # The SMTP TLS requirement.
+        # Note that Go does not support unencrypted connections to remote SMTP endpoints.
+        require_tls: false
+
+        # The text body of the email notification.
+        text: "Alert Notification from WeCo Demo"
