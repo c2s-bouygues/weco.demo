@@ -169,7 +169,7 @@ services:
     <<: *promtail-labels
     <<: *service
     volumes:
-      - promtail-provisioning:/etc/promtail/config.yml
+      - promtail-provisioning:/etc/promtail/
     command: -config.file=/etc/promtail/config.yml
 
 
