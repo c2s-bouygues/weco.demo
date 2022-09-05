@@ -186,6 +186,3 @@ networks:
   monitoring:
     name: monitoring
     <<: *network
-  database:
-    name: database
-    <<: *network
