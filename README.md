@@ -11,8 +11,7 @@ _<u>Attention :</u> Ce setup n'inclus pas de haut niveau en terme de sécurité 
 * [DONE] [Traefik](https://traefik.io) : Serveur web avec autodiscovery
 * [DONE] [letsencrypt](https://letsencrypt.org) : Fournisseur de certificats SSL
 * [DONE] [Portainer](https://www.portainer.io/) : Panneau d'administration des conteneurs Docker
-* [DONE] [Influxdb 2](https://www.influxdata.com/blog/influxdb-2-0-open-source-is-generally-available/) et [Telegraf](https://www.influxdata.com/time-series-platform/telegraf/) : Monitoring services
-* [DONE] [Grafana](https://grafana.com/) et [Victoriametrics](https://victoriametrics.com) : Monitoring des services
+* [DONE] [Grafana](https://grafana.com/) et [Prometheus](https://prometheus.io/) : Monitoring des services
 
 ### Base de données
 * [DONE] [Postgresql](https://www.postgresql.org/) : Base de données SQL
@@ -85,7 +84,6 @@ bash setup.sh
 Après avoir saisi toutes les commandes ci-dessous, vous pourrez vous connecter à vos nouveaux services via les URLs suivantes :
 * https://traefik.devops.your_domain user `votre $USERNAME` password `votre $PASSWORD`
 * https://portainer.devops.your_domain
-* https://influxdb.devops.your_domain user `votre $USERNAME` password `votre $PASSWORD`
 * https://grafana.devops.your_domain user `votre $USERNAME` password `votre $PASSWORD`
 * https://victoriametrics.devops.your_domain user `votre $USERNAME` password `votre $PASSWORD`
 * https://adminer.devops.your_domain user `votre $USERNAME` password `votre $PASSWORD`
