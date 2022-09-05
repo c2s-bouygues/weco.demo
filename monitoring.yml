@@ -34,6 +34,40 @@ x-alertmanager-labels: &alertmanager-labels
     - traefik.http.routers.alertmanager-https.tls.certresolver=le
     - traefik.http.services.alertmanager.loadbalancer.server.port=9093
 
+x-loki-labels: &loki-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=monitoring
+    - traefik.http.routers.loki-http.rule=Host(`loki.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.loki-http.entrypoints=http
+    #- traefik.http.routers.loki-http.middlewares=admin-auth
+    - traefik.http.routers.loki-http.service=loki
+    - traefik.http.routers.loki-http.middlewares=https-redirect
+    - traefik.http.routers.loki-https.rule=Host(`loki.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.loki-https.entrypoints=https
+    - traefik.http.routers.loki-https.middlewares=admin-auth
+    - traefik.http.routers.loki-https.tls=true
+    - traefik.http.routers.loki-https.service=loki
+    - traefik.http.routers.loki-https.tls.certresolver=le
+    - traefik.http.services.loki.loadbalancer.server.port=3100
+    
+x-promtail-labels: &promtail-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=monitoring
+    - traefik.http.routers.promtail-http.rule=Host(`promtail.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.promtail-http.entrypoints=http
+    #- traefik.http.routers.promtail-http.middlewares=admin-auth
+    - traefik.http.routers.promtail-http.service=promtail
+    - traefik.http.routers.promtail-http.middlewares=https-redirect
+    - traefik.http.routers.promtail-https.rule=Host(`promtail.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.promtail-https.entrypoints=https
+    - traefik.http.routers.promtail-https.middlewares=admin-auth
+    - traefik.http.routers.promtail-https.tls=true
+    - traefik.http.routers.promtail-https.service=promtail
+    - traefik.http.routers.promtail-https.tls.certresolver=le
+    - traefik.http.services.promtail.loadbalancer.server.port=9080
+
 x-grafana-labels: &grafana-labels
   labels:
     - traefik.enable=true
@@ -104,6 +138,40 @@ services:
       - '--config.file=/etc/alertmanager/config.yml'
       - '--storage.path=/alertmanager'
 
+  loki:
+    container_name: loki
+    image: grafana/loki:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
+      <<: *loki-labels
+    <<: *loki-labels
+    <<: *service
+    volumes:
+      - loki-provisioning:/etc/loki/
+    command: -config.file=/etc/loki/config.yml
+
+  promtail:
+    container_name: promtail
+    image: grafana/promtail
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
+      <<: *promtail-labels
+    <<: *promtail-labels
+    <<: *service
+    volumes:
+      - promtail-provisioning:/etc/promtail/config.yml
+    command: -config.file=/etc/promtail/config.yml
+
 
   # https://hub.docker.com/r/grafana/grafana
   grafana:
@@ -166,6 +234,18 @@ volumes:
     driver_opts:
       <<: *volume-driver-opts
       device: ${DATAPATH?Variable DATAPATH not set}/alertmanager/provisioning
+  promtail-provisioning:
+    name: promtail-provisioning
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/promtail/provisioning
+  loki-provisioning:
+    name: loki-provisioning
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/loki/provisioning
   grafana-data:
     name: grafana-data
     <<: *volume
