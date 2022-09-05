@@ -1,5 +1,4 @@
 
-export ADMIN_SUB_DOMAIN=weco.
 export USERNAME=admin
 export DATAPATH=/data
 

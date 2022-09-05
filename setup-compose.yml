@@ -30,12 +30,12 @@ services:
         - traefik.http.middlewares.admin-auth.basicauth.users=${USERNAME?Variable USERNAME not set}:${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
         - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
         - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
-        - traefik.http.routers.traefik-api-http.rule=Host(`traefik.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable DOMAIN not set}`)
+        - traefik.http.routers.traefik-api-http.rule=Host(`traefik.${DOMAIN?Variable DOMAIN not set}`)
         - traefik.http.routers.traefik-api-http.entrypoints=http
         - traefik.http.routers.traefik-api-http.service=api@internal
         #- traefik.http.routers.traefik-api-http.middlewares=https-redirect
         - traefik.http.routers.traefik-api-http.middlewares=admin-auth
-        - traefik.http.routers.traefik-api-https.rule=Host(`traefik.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable DOMAIN not set}`)
+        - traefik.http.routers.traefik-api-https.rule=Host(`traefik.${DOMAIN?Variable DOMAIN not set}`)
         - traefik.http.routers.traefik-api-https.entrypoints=https
         - traefik.http.routers.traefik-api-https.tls=true
         - traefik.http.routers.traefik-api-https.service=api@internal
@@ -48,7 +48,7 @@ services:
     command:
       - --providers.docker
       - --providers.docker.exposedbydefault=false
-      - --providers.docker.defaultRule=Host(`{{ .Name }}.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable DOMAIN not set}`)
+      - --providers.docker.defaultRule=Host(`{{ .Name }}.${DOMAIN?Variable DOMAIN not set}`)
       - --entrypoints.http.address=:80
       - --entrypoints.https.address=:443
       # - --entrypoints.smtp.address=:587

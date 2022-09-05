@@ -4,12 +4,12 @@ x-prometheus-labels: &prometheus-labels
   labels:
     - traefik.enable=true
     - traefik.docker.network=monitoring
-    - traefik.http.routers.prometheus-http.rule=Host(`prometheus.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable not set}`)
+    - traefik.http.routers.prometheus-http.rule=Host(`prometheus.${DOMAIN?Variable not set}`)
     - traefik.http.routers.prometheus-http.entrypoints=http
     #- traefik.http.routers.prometheus-http.middlewares=admin-auth
     - traefik.http.routers.prometheus-http.service=prometheus
     - traefik.http.routers.prometheus-http.middlewares=https-redirect
-    - traefik.http.routers.prometheus-https.rule=Host(`prometheus.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable not set}`)
+    - traefik.http.routers.prometheus-https.rule=Host(`prometheus.${DOMAIN?Variable not set}`)
     - traefik.http.routers.prometheus-https.entrypoints=https
     - traefik.http.routers.prometheus-https.middlewares=admin-auth
     - traefik.http.routers.prometheus-https.tls=true
@@ -21,12 +21,12 @@ x-alertmanager-labels: &alertmanager-labels
   labels:
     - traefik.enable=true
     - traefik.docker.network=monitoring
-    - traefik.http.routers.alertmanager-http.rule=Host(`alertmanager.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable not set}`)
+    - traefik.http.routers.alertmanager-http.rule=Host(`alertmanager.${DOMAIN?Variable not set}`)
     - traefik.http.routers.alertmanager-http.entrypoints=http
     #- traefik.http.routers.alertmanager-http.middlewares=admin-auth
     - traefik.http.routers.alertmanager-http.service=alertmanager
     - traefik.http.routers.alertmanager-http.middlewares=https-redirect
-    - traefik.http.routers.alertmanager-https.rule=Host(`alertmanager.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable not set}`)
+    - traefik.http.routers.alertmanager-https.rule=Host(`alertmanager.${DOMAIN?Variable not set}`)
     - traefik.http.routers.alertmanager-https.entrypoints=https
     - traefik.http.routers.alertmanager-https.middlewares=admin-auth
     - traefik.http.routers.alertmanager-https.tls=true
@@ -34,33 +34,16 @@ x-alertmanager-labels: &alertmanager-labels
     - traefik.http.routers.alertmanager-https.tls.certresolver=le
     - traefik.http.services.alertmanager.loadbalancer.server.port=9093
 
-x-influxdb-labels: &influxdb-labels
-  labels:
-    - traefik.enable=true
-    - traefik.docker.network=monitoring
-    - traefik.http.routers.influxdb-http.rule=Host(`influxdb.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable not set}`)
-    - traefik.http.routers.influxdb-http.entrypoints=http
-    #- traefik.http.routers.influxdb-http.middlewares=admin-auth
-    - traefik.http.routers.influxdb-http.service=influxdb
-    - traefik.http.routers.influxdb-http.middlewares=https-redirect
-    - traefik.http.routers.influxdb-https.rule=Host(`influxdb.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable not set}`)
-    - traefik.http.routers.influxdb-https.entrypoints=https
-    #- traefik.http.routers.influxdb-https.middlewares=admin-auth
-    - traefik.http.routers.influxdb-https.tls=true
-    - traefik.http.routers.influxdb-https.service=influxdb
-    - traefik.http.routers.influxdb-https.tls.certresolver=le
-    - traefik.http.services.influxdb.loadbalancer.server.port=8086
-
 x-grafana-labels: &grafana-labels
   labels:
     - traefik.enable=true
     - traefik.docker.network=monitoring
-    - traefik.http.routers.grafana-http.rule=Host(`grafana.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable not set}`)
+    - traefik.http.routers.grafana-http.rule=Host(`grafana.${DOMAIN?Variable not set}`)
     - traefik.http.routers.grafana-http.entrypoints=http
     #- traefik.http.routers.grafana-http.middlewares=admin-auth
     - traefik.http.routers.grafana-http.service=grafana
     - traefik.http.routers.grafana-http.middlewares=https-redirect
-    - traefik.http.routers.grafana-https.rule=Host(`grafana.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable not set}`)
+    - traefik.http.routers.grafana-https.rule=Host(`grafana.${DOMAIN?Variable not set}`)
     - traefik.http.routers.grafana-https.entrypoints=https
     #- traefik.http.routers.grafana-https.middlewares=admin-auth
     - traefik.http.routers.grafana-https.tls=true
@@ -148,7 +131,7 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: ${PASSWORD?Variable PASSWORD not set}
       GF_SECURITY_ADMIN_USER: ${USERNAME?Variable USERNAME not set}
       GF_SECURITY_SECRET_KEY: ${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
-      GF_SERVER_ROOT_URL: https://grafana.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable not set}
+      GF_SERVER_ROOT_URL: https://grafana.${DOMAIN?Variable not set}
       GF_SERVER_ENABLE_GZIP: "true"
       GF_SECURITY_COOKIE_SECURE: "true"
       GF_SNAPSHOTS_EXTERNAL_ENABLED: "false"
