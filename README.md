@@ -13,10 +13,6 @@ _<u>Attention :</u> Ce setup n'inclus pas de haut niveau en terme de sécurité 
 * [DONE] [Portainer](https://www.portainer.io/) : Panneau d'administration des conteneurs Docker
 * [DONE] [Grafana](https://grafana.com/) et [Prometheus](https://prometheus.io/) : Monitoring des services
 
-### Base de données
-* [DONE] [Postgresql](https://www.postgresql.org/) : Base de données SQL
-* [DONE] [SQL Adminer](https://www.adminer.org/) : Outil d'administration pour les base de données
-
 ## Mise en place
 
 Toutes les opérations doivent être exécutés en tant que `root` sur la machine distante.
@@ -86,12 +82,10 @@ Après avoir saisi toutes les commandes ci-dessous, vous pourrez vous connecter 
 * https://portainer.devops.your_domain
 * https://grafana.devops.your_domain user `votre $USERNAME` password `votre $PASSWORD`
 * https://victoriametrics.devops.your_domain user `votre $USERNAME` password `votre $PASSWORD`
-* https://adminer.devops.your_domain user `votre $USERNAME` password `votre $PASSWORD`
 
 Étapes obligatoires :
 ```
 docker-compose -f setup-compose.yml up -d
-docker-compose -f databases.yml up -d
 ```
 
 A partir de maintenant, vous pouvez choisir les services dont vous avez besoin :
