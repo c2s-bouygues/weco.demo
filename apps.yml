@@ -34,7 +34,7 @@ x-service: &service
 services:
   api:
     container_name: api
-    image: xrevo/useless-soft-api:220906-1633
+    image: xrevo/useless-soft-api:220906-1636
     deploy:
       mode: replicated
       replicas: 1
@@ -48,7 +48,7 @@ services:
     
   is-alive:
     container_name: is-alive
-    image: xrevo/useless-soft-is-alive:220906-1633
+    image: xrevo/useless-soft-is-alive:220906-1636
     deploy:
       mode: replicated
       replicas: 1
@@ -62,7 +62,7 @@ services:
     
   bureaucracy:
     container_name: bureaucracy
-    image: xrevo/useless-soft-bureaucracy:220906-1633
+    image: xrevo/useless-soft-bureaucracy:220906-1636
     deploy:
       mode: replicated
       replicas: 1
