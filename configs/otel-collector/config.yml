@@ -5,6 +5,7 @@ receivers:
   otlp:
     protocols:
       grpc:
+      http:
 
 # Configure exporters
 exporters:
@@ -20,33 +21,10 @@ exporters:
     endpoint: "http://zipkin:9411/api/v2/spans"
     format: proto
 
-  # # Export to Loki
-  # loki:
-  #   endpoint: http://loki:3100/loki/api/v1/push
-
-  # # Export to a file
-  # file:
-  #   path: /etc/output/logs.json
-
 # Configure processors (batch, sampling, filtering, hashing sensitive data, etc.)
 # https://opentelemetry.io/docs/collector/configuration/#processors
 processors:
   batch:
-
-  attributes:
-    actions:
-    - action: insert
-      key: loki.attribute.labels
-      value: [http.status_code]
-
-  resource:
-    attributes:
-    - action: insert
-      key: loki.attribute.labels
-      value: [http.status]
-    - action: insert
-      key: loki.resource.labels
-      value: [host.name]
 
 # Configure pipelines. Pipeline defines a path the data follows in the Collector
 # starting from reception, then further processing or modification and finally
@@ -66,4 +44,8 @@ service:
     logs:
       receivers: [otlp]
       processors: []
-      exporters: [logging] #, file]
+      exporters: [logging]
+
+extensions:
+  zpages:
+    endpoint: 0.0.0.0:55679
