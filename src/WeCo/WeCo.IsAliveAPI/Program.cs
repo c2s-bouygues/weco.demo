@@ -99,7 +99,7 @@ app.MapGet("/is-alive", async (ILogger<Program> logger, IHttpClientFactory httpC
     requestsCounter.Add(1);
 
     using (var activity = activitySource.StartActivity("Define Liveness")) {
-        var isAlive = random.Next(1) == 1;
+        var isAlive = random.Next(10) >= 5;
         activity?.AddTag("is-alive", isAlive);
 
         // Useless condition
