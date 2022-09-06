@@ -94,7 +94,7 @@ var alivesCounter = meter.CreateCounter<int>("alives");
 var deadsCounter = meter.CreateCounter<int>("deads");
 
 app.MapGet("/is-alive", async (ILogger<Program> logger, IHttpClientFactory httpClientFactory, Random random, Faker faker) => {
-    var bureaucracyHttpClient = httpClientFactory.CreateClient("Bureaucreacy");
+    var bureaucracyHttpClient = httpClientFactory.CreateClient("Bureaucracy");
 
     requestsCounter.Add(1);
 
