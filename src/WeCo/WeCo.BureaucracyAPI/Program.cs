@@ -86,11 +86,11 @@ app.UseSwaggerUI();
 // Create a route (GET /) that will make an http call, increment a metric and log a trace
 var activitySource = new ActivitySource("WeCo.BureaucracyAPI.ActivitySource");
 var meter = new Meter("BureaucracyMetrics");
-var requestsCounter = meter.CreateCounter<int>("bureaucracy_requests");
-var bracesCounter = meter.CreateCounter<int>("bureaucracy_braces");
-var deadsCounter = meter.CreateCounter<int>("bureaucracy_deads");
-var locationsCounter = meter.CreateCounter<int>("bureaucracy_locations");
-var datesCounter = meter.CreateCounter<int>("bureaucracy_dates");
+var requestsCounter = meter.CreateCounter<int>("requests");
+var bracesCounter = meter.CreateCounter<int>("braces");
+var deadsCounter = meter.CreateCounter<int>("deads");
+var locationsCounter = meter.CreateCounter<int>("locations");
+var datesCounter = meter.CreateCounter<int>("dates");
 
 app.MapGet("/brace-yourself", (ILogger<Program> logger, HttpRequest request) => {
     requestsCounter.Add(1);

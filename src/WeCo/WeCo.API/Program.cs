@@ -89,9 +89,9 @@ app.UseSwaggerUI();
 // Create a route (GET /) that will make an http call, increment a metric and log a trace
 var activitySource = new ActivitySource("WeCo.API.ActivitySource");
 var meter = new Meter("ContactMetrics");
-var requestsCounter = meter.CreateCounter<int>("contact_requests");
-var alivesCounter = meter.CreateCounter<int>("contact_alives");
-var deadsCounter = meter.CreateCounter<int>("contact_deads");
+var requestsCounter = meter.CreateCounter<int>("requests");
+var alivesCounter = meter.CreateCounter<int>("alives");
+var deadsCounter = meter.CreateCounter<int>("deads");
 
 app.MapGet("/contact", async (ILogger<Program> logger, IHttpClientFactory httpClientFactory) => {
     requestsCounter.Add(1);

@@ -89,9 +89,9 @@ app.UseSwaggerUI();
 // Create a route (GET /) that will make an http call, increment a metric and log a trace
 var activitySource = new ActivitySource("WeCo.IsAliveAPI.ActivitySource");
 var meter = new Meter("LivenessMetrics");
-var requestsCounter = meter.CreateCounter<int>("liveness_requests");
-var alivesCounter = meter.CreateCounter<int>("liveness_alives");
-var deadsCounter = meter.CreateCounter<int>("liveness_deads");
+var requestsCounter = meter.CreateCounter<int>("requests");
+var alivesCounter = meter.CreateCounter<int>("alives");
+var deadsCounter = meter.CreateCounter<int>("deads");
 
 app.MapGet("/is-alive", async (ILogger<Program> logger, IHttpClientFactory httpClientFactory, Random random, Faker faker) => {
     var bureaucracyHttpClient = httpClientFactory.CreateClient("Bureaucreacy");
