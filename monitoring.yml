@@ -196,7 +196,7 @@ services:
   # OpenTelemetry Collector
   otel-collector:
     container_name: otel
-    image: otel/opentelemetry-collector
+    image: otel/opentelemetry-collector-contrib
     deploy:
       mode: replicated
       replicas: 1
