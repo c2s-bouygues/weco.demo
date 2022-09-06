@@ -33,6 +33,21 @@ exporters:
 processors:
   batch:
 
+  attributes:
+    actions:
+    - action: insert
+      key: loki.attribute.labels
+      value: [http.status_code]
+
+  resource:
+    attributes:
+    - action: insert
+      key: loki.attribute.labels
+      value: [http.status]
+    - action: insert
+      key: loki.resource.labels
+      value: [host.name]
+
 # Configure pipelines. Pipeline defines a path the data follows in the Collector
 # starting from reception, then further processing or modification and finally
 # exiting the Collector via exporters.
