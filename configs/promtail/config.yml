@@ -11,7 +11,7 @@ client:
 scrape_configs:
 
 - job_name: system
-  entry_parser: raw
+#  entry_parser: raw
   static_configs:
   - targets:
       - localhost
@@ -20,6 +20,7 @@ scrape_configs:
       __path__: /var/log/**/*log
 
 - job_name: messages
+#  entry_parser: raw
   static_configs:
   - targets:
       - localhost
