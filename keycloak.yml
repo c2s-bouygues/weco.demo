@@ -13,7 +13,7 @@ x-keycloak-labels: &keycloak-labels
     - traefik.http.routers.keycloak-https.tls=true
     - traefik.http.routers.keycloak-https.service=keycloak
     - traefik.http.routers.keycloak-https.tls.certresolver=le
-    - traefik.http.services.keycloak.loadbalancer.server.port=80
+    - traefik.http.services.keycloak.loadbalancer.server.port=8080
 
 x-service: &service
   logging:
@@ -64,11 +64,7 @@ services:
           memory: 100M
       <<: *keycloak-labels
     <<: *keycloak-labels
-    <<: *service
-    ports:
-      - 80:8080
-    depends_on:
-      - postgres    
+    <<: *service  
 
 x-volume: &volume
   driver: local
