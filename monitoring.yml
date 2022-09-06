@@ -50,7 +50,7 @@ x-loki-labels: &loki-labels
     - traefik.http.routers.loki-https.service=loki
     - traefik.http.routers.loki-https.tls.certresolver=le
     - traefik.http.services.loki.loadbalancer.server.port=3100
-    
+
 x-promtail-labels: &promtail-labels
   labels:
     - traefik.enable=true
@@ -67,6 +67,23 @@ x-promtail-labels: &promtail-labels
     - traefik.http.routers.promtail-https.service=promtail
     - traefik.http.routers.promtail-https.tls.certresolver=le
     - traefik.http.services.promtail.loadbalancer.server.port=9080
+
+x-zipkin-labels: &zipkin-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=monitoring
+    - traefik.http.routers.zipkin-http.rule=Host(`zipkin.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.zipkin-http.entrypoints=http
+    #- traefik.http.routers.zipkin-http.middlewares=admin-auth
+    - traefik.http.routers.zipkin-http.service=zipkin
+    - traefik.http.routers.zipkin-http.middlewares=https-redirect
+    - traefik.http.routers.zipkin-https.rule=Host(`zipkin.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.zipkin-https.entrypoints=https
+    - traefik.http.routers.zipkin-https.middlewares=admin-auth
+    - traefik.http.routers.zipkin-https.tls=true
+    - traefik.http.routers.zipkin-https.service=zipkin
+    - traefik.http.routers.zipkin-https.tls.certresolver=le
+    - traefik.http.services.zipkin.loadbalancer.server.port=9411
 
 x-grafana-labels: &grafana-labels
   labels:
@@ -172,6 +189,36 @@ services:
       - promtail-provisioning:/etc/promtail/
     command: -config.file=/etc/promtail/config.yml
 
+  # OpenTelemetry Collector
+  otel-collector:
+    container_name: otel
+    image: otel/opentelemetry-collector
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
+    <<: *service
+    volumes:
+      - otel-collector-provisioning:/etc/otel-collector/
+      - otel-collector-data:/etc/output:rw
+    command: ["--config=/etc/otel-collector/config.yml"]
+    
+  zipkin:
+    container_name: zipkin
+    image: openzipkin/zipkin
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
+      <<: *zipkin-labels
+    <<: *zipkin-labels
+    <<: *service
 
   # https://hub.docker.com/r/grafana/grafana
   grafana:
@@ -246,6 +293,18 @@ volumes:
     driver_opts:
       <<: *volume-driver-opts
       device: ${DATAPATH?Variable DATAPATH not set}/loki/provisioning
+  otel-collector-data:
+    name: otel-collector-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/otel-collector/data
+  otel-collector-provisioning:
+    name: otel-collector-provisioning
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/otel-collector/provisioning
   grafana-data:
     name: grafana-data
     <<: *volume
