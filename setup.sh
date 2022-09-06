@@ -1,4 +1,4 @@
-mkdir -p ${DATAPATH?Variable DATAPATH not set}/{traefik,portainer,grafana,prometheus,alertmanager,loki,promtail,otel-collector}/{data,entrypoint,configs,certificates,logs,provisioning}
+mkdir -p ${DATAPATH?Variable DATAPATH not set}/{traefik,portainer,grafana,prometheus,alertmanager,loki,promtail,otel-collector,postgres}/{data,entrypoint,configs,certificates,logs,provisioning}
 
 yes | cp -rf configs/prometheus/* ${DATAPATH?Variable DATAPATH not set}/prometheus/provisioning
 yes | cp -rf configs/alertmanager/* ${DATAPATH?Variable DATAPATH not set}/alertmanager/provisioning

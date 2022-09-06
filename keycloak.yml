@@ -1,0 +1,90 @@
+﻿version: '3.8'
+
+x-keycloak-labels: &keycloak-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=keycloak
+    - traefik.http.routers.keycloak-http.rule=Host(`keycloak.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.keycloak-http.entrypoints=http
+    - traefik.http.routers.keycloak-http.service=keycloak
+    - traefik.http.routers.keycloak-http.middlewares=https-redirect
+    - traefik.http.routers.keycloak-https.rule=Host(`keycloak.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.keycloak-https.entrypoints=https
+    - traefik.http.routers.keycloak-https.tls=true
+    - traefik.http.routers.keycloak-https.service=keycloak
+    - traefik.http.routers.keycloak-https.tls.certresolver=le
+    - traefik.http.services.keycloak.loadbalancer.server.port=80
+
+x-service: &service
+  logging:
+    driver: json-file
+    options:
+      max-size: "100m"
+      max-file: "2"
+    restart: always
+    networks:
+      - keycloak
+
+services:
+  postgres:
+    container_name: keycloak-postgres
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: ${USERNAME?Variable USERNAME not set}
+      POSTGRES_PASSWORD: ${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.05'
+          memory: 100M
+
+  keycloak:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:legacy
+    environment: 
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: keycloak
+      DB_USER: ${USERNAME?Variable USERNAME not set}
+      DB_SCHEMA: public
+      DB_PASSWORD: ${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
+      KEYCLOAK_USER: ${USERNAME?Variable USERNAME not set}
+      KEYCLOAK_PASSWORD: ${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.05'
+          memory: 100M
+      <<: *keycloak-labels
+    <<: *keycloak-labels
+    <<: *service
+    ports:
+      - 80:8080
+    depends_on:
+      - postgres    
+
+x-volume: &volume
+  driver: local
+x-volume-driver-opts: &volume-driver-opts
+  type: none
+  o: bind
+
+volumes:
+  postgres_data:
+    name: postgres_data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/postgres/data
+
+networks:
+  keycloak:
+    name: keycloak
+    external: true

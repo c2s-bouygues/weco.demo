@@ -12,6 +12,7 @@ _<u>Attention :</u> Ce setup n'inclus pas de haut niveau en terme de sécurité 
 * [DONE] [letsencrypt](https://letsencrypt.org) : Fournisseur de certificats SSL
 * [DONE] [Portainer](https://www.portainer.io/) : Panneau d'administration des conteneurs Docker
 * [DONE] [Grafana](https://grafana.com/) et [Prometheus](https://prometheus.io/) : Monitoring des services
+* [IN_PROGRESS] [KeyCloak](https://www.keycloak.org/) : Serveur d'authentification
 
 ## Mise en place
 
