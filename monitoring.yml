@@ -84,6 +84,23 @@ x-zipkin-labels: &zipkin-labels
     - traefik.http.routers.zipkin-https.service=zipkin
     - traefik.http.routers.zipkin-https.tls.certresolver=le
     - traefik.http.services.zipkin.loadbalancer.server.port=9411
+    
+x-otel-collector-labels: &otel-collector-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=monitoring
+    - traefik.http.routers.otel-collector-http.rule=Host(`zpages.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.otel-collector-http.entrypoints=http
+    #- traefik.http.routers.otel-collector-http.middlewares=admin-auth
+    - traefik.http.routers.otel-collector-http.service=otel-collector
+    - traefik.http.routers.otel-collector-http.middlewares=https-redirect
+    - traefik.http.routers.otel-collector-https.rule=Host(`zpages.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.otel-collector-https.entrypoints=https
+    - traefik.http.routers.otel-collector-https.middlewares=admin-auth
+    - traefik.http.routers.otel-collector-https.tls=true
+    - traefik.http.routers.otel-collector-https.service=otel-collector
+    - traefik.http.routers.otel-collector-https.tls.certresolver=le
+    - traefik.http.services.otel-collector.loadbalancer.server.port=55679
 
 x-grafana-labels: &grafana-labels
   labels:
@@ -204,8 +221,8 @@ services:
         reservations:
           cpus: '0.01'
           memory: 50M
-      <<: *no-labels
-    <<: *no-labels
+      <<: *otel-collector-labels
+    <<: *otel-collector-labels
     <<: *service
     volumes:
       - otel-collector-provisioning:/etc/otel-collector/
