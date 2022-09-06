@@ -122,7 +122,7 @@ app.MapGet("/locations", (ILogger<Program> logger, HttpRequest request, Faker fa
 
         var contact = new ContactLocations {
             BirthLocation = faker.Address.Country(),
-            DeathLocation = isAlive ? faker.Address.Country() : string.Empty
+            DeathLocation = isAlive ? string.Empty : faker.Address.Country()
         };
 
         logger.LogInformation(
@@ -156,7 +156,7 @@ app.MapGet("/dates", (ILogger<Program> logger, HttpRequest request, Random rando
         var maxAge = random.Next(30, 65);
         var contact = new ContactDates {
             BirthDay = faker.Date.Past(maxAge),
-            DeathDay = isAlive ? faker.Date.Past(20) : null
+            DeathDay = isAlive ? null : faker.Date.Past(20)
         };
 
         logger.LogInformation(

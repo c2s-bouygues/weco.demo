@@ -115,16 +115,19 @@ app.MapGet("/contact", async (ILogger<Program> logger, IHttpClientFactory httpCl
             datesTask
         );
 
-        var locations = locationsTask.Result;
-        var dates = datesTask.Result;
+        if (locationsTask.IsFaulted || datesTask.IsFaulted)
+            return Results.StatusCode(500);
+
+        var locations = locationsTask.Result!;
+        var dates = datesTask.Result!;
 
         var contact = new Contact {
             IsAlive = liveness?.IsAlive ?? false,
             FullName = liveness?.FullName ?? "John Doe",
-            BirthDay = dates?.BirthDay ?? DateTime.UtcNow,
-            BirthLocation = locations?.BirthLocation ?? "Santiago du Chili",
-            DeathDay = dates?.DeathDay ?? DateTime.UtcNow,
-            DeathLocation = locations?.DeathLocation ?? "Sainte-Hélène"
+            BirthDay = dates.BirthDay,
+            BirthLocation = locations.BirthLocation,
+            DeathDay = dates.DeathDay,
+            DeathLocation = locations.DeathLocation
         };
 
         if (liveness?.IsAlive == true)
