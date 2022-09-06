@@ -1,0 +1,84 @@
+version: '3.8'
+
+x-api-labels: &api-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=monitoring
+    - traefik.http.routers.api-http.rule=Host(`api.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.api-http.entrypoints=http
+    #- traefik.http.routers.api-http.middlewares=admin-auth
+    - traefik.http.routers.api-http.service=api
+    - traefik.http.routers.api-http.middlewares=https-redirect
+    - traefik.http.routers.api-https.rule=Host(`api.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.api-https.entrypoints=https
+    - traefik.http.routers.api-https.middlewares=admin-auth
+    - traefik.http.routers.api-https.tls=true
+    - traefik.http.routers.api-https.service=api
+    - traefik.http.routers.api-https.tls.certresolver=le
+    - traefik.http.services.api.loadbalancer.server.port=80
+
+x-no-labels: &no-labels
+  labels:
+    - traefik.enable=false
+    
+x-service: &service
+  logging:
+    driver: json-file
+    options:
+      max-size: "100m"
+      max-file: "2"
+  restart: always
+  networks:
+    - monitoring
+
+services:
+  api:
+    container_name: api
+    image: xrevo/useless-soft-api:220906-1524
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
+      <<: *api-labels
+    <<: *api-labels
+    <<: *service
+    
+  is-alive:
+    container_name: is-alive
+    image: xrevo/useless-soft-is-alive:220906-1524
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
+      <<: *no-labels
+    <<: *no-labels
+    <<: *service
+    
+  bureaucracy:
+    container_name: bureaucracy
+    image: xrevo/useless-soft-bureaucracy:220906-1524
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
+      <<: *no-labels
+    <<: *no-labels
+    <<: *service
+
+
+x-network: &network
+  external: true
+
+networks:
+  monitoring:
+    name: monitoring
+    <<: *network
