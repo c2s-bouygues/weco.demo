@@ -102,6 +102,10 @@ x-grafana-labels: &grafana-labels
     - traefik.http.routers.grafana-https.tls.certresolver=le
     - traefik.http.services.grafana.loadbalancer.server.port=3000
 
+x-no-labels: &no-labels
+  labels:
+    - traefik.enable=false
+
 x-service: &service
   logging:
     driver: json-file
@@ -200,6 +204,8 @@ services:
         reservations:
           cpus: '0.01'
           memory: 50M
+      <<: *no-labels
+    <<: *no-labels
     <<: *service
     volumes:
       - otel-collector-provisioning:/etc/otel-collector/
