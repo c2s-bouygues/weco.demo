@@ -209,7 +209,7 @@ services:
     <<: *service
     volumes:
       - otel-collector-provisioning:/etc/otel-collector/
-      - otel-collector-data:/etc/output:rw
+      # - otel-collector-data:/etc/output:rw
     command: ["--config=/etc/otel-collector/config.yml"]
     
   zipkin:
