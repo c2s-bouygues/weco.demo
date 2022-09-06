@@ -75,6 +75,7 @@ services:
     networks:
       - monitoring
       - portainer
+      - keycloak
 
 x-volume: &volume
   driver: local
