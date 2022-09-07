@@ -15,10 +15,6 @@ x-keycloak-labels: &keycloak-labels
     - traefik.http.routers.keycloak-https.tls.certresolver=le
     - traefik.http.services.keycloak.loadbalancer.server.port=8080
 
-x-no-labels: &no-labels
-  labels:
-    - traefik.enable=false
-
 x-service: &service
   logging:
     driver: json-file
@@ -28,28 +24,9 @@ x-service: &service
   restart: always
   networks:
     - keycloak
+    - database
 
 services:
-  postgres:
-    container_name: keycloak-postgres
-    image: postgres
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    deploy:
-      mode: replicated
-      replicas: 1
-      resources:
-        reservations:
-          cpus: '0.05'
-          memory: 100M
-      <<: *no-labels
-    <<: *no-labels
-    <<: *service
-    environment:
-      POSTGRES_DB: keycloak
-      POSTGRES_USER: ${USERNAME?Variable USERNAME not set}
-      POSTGRES_PASSWORD: ${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
-
   keycloak:
     container_name: keycloak
     image: quay.io/keycloak/keycloak:legacy
@@ -67,11 +44,11 @@ services:
       DB_VENDOR: POSTGRES
       DB_ADDR: postgres
       DB_DATABASE: keycloak
-      DB_USER: ${USERNAME?Variable USERNAME not set}
+      DB_USER: keycloak
       DB_SCHEMA: public
-      DB_PASSWORD: ${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
-      KEYCLOAK_USER: ${USERNAME?Variable USERNAME not set}
-      KEYCLOAK_PASSWORD: ${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
+      DB_PASSWORD: ${KEYCLOAK_SQL_PASSWORD?Variable KEYCLOAK_SQL_PASSWORD not set}
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD?Variable KEYCLOAK_PASSWORD not set}
 
 x-volume: &volume
   driver: local
@@ -90,4 +67,7 @@ volumes:
 networks:
   keycloak:
     name: keycloak
+    external: true
+  database:
+    name: database
     external: true

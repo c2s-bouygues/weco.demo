@@ -55,6 +55,8 @@ Note : Il s'agit de données telle que le nom de domaine de votre serveur, votre
 
 Générez des mots de passe aléatoirement :
 ```
+echo -e "export KEYCLOAK_SQL_PASSWORD=$(echo $RANDOM `date`|md5sum|base64|head -c 25)\n$(cat env.sh)" > env.sh
+echo -e "export KEYCLOAK_PASSWORD=$(echo $RANDOM `date`|md5sum|base64|head -c 25)\n$(cat env.sh)" > env.sh
 echo -e "export SQL_ROOT_PASSWORD=$(echo $RANDOM `date`|md5sum|base64|head -c 25)\n$(cat env.sh)" > env.sh
 echo -e "export PASSWORD=$(echo $RANDOM `date`|md5sum|base64|head -c 25)\n$(cat env.sh)" > env.sh
 ```

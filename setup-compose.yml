@@ -75,6 +75,7 @@ services:
     networks:
       - monitoring
       - portainer
+      - database
       - keycloak
 
 x-volume: &volume
@@ -101,6 +102,9 @@ networks:
     <<: *network
   portainer:
     name: portainer
+    <<: *network
+  database:
+    name: database
     <<: *network
   keycloak:
     name: keycloak
