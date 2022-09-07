@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32602.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeCo.API", "WeCo.API\WeCo.API.csproj", "{19077EDF-181A-42BA-A568-02DC6A9F17A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeCo.API.Noises", "WeCo.API.Noises\WeCo.API.Noises.csproj", "{19077EDF-181A-42BA-A568-02DC6A9F17A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeCo.IsAliveAPI", "WeCo.IsAliveAPI\WeCo.IsAliveAPI.csproj", "{3FC93C84-FB30-4D99-94BC-472A7A474392}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeCo.API.Smokes", "WeCo.API.Smokes\WeCo.API.Smokes.csproj", "{3F68613F-DCA9-411B-AE19-360D65AC5CB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeCo.BureaucracyAPI", "WeCo.BureaucracyAPI\WeCo.BureaucracyAPI.csproj", "{1E413025-2A7D-4ECA-B280-C62C48C220A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeCo.SensorsAPI", "WeCo.SensorsAPI\WeCo.SensorsAPI.csproj", "{3FC93C84-FB30-4D99-94BC-472A7A474392}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeCo.AlertsAPI", "WeCo.AlertsAPI\WeCo.AlertsAPI.csproj", "{1E413025-2A7D-4ECA-B280-C62C48C220A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,6 +21,10 @@ Global
 		{19077EDF-181A-42BA-A568-02DC6A9F17A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19077EDF-181A-42BA-A568-02DC6A9F17A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19077EDF-181A-42BA-A568-02DC6A9F17A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F68613F-DCA9-411B-AE19-360D65AC5CB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F68613F-DCA9-411B-AE19-360D65AC5CB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F68613F-DCA9-411B-AE19-360D65AC5CB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F68613F-DCA9-411B-AE19-360D65AC5CB6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3FC93C84-FB30-4D99-94BC-472A7A474392}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3FC93C84-FB30-4D99-94BC-472A7A474392}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FC93C84-FB30-4D99-94BC-472A7A474392}.Release|Any CPU.ActiveCfg = Release|Any CPU
