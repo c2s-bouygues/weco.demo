@@ -7,7 +7,7 @@ x-keycloak-labels: &keycloak-labels
     - traefik.http.routers.keycloak-http.rule=Host(`keycloak.${DOMAIN?Variable DOMAIN not set}`)
     - traefik.http.routers.keycloak-http.entrypoints=http
     - traefik.http.routers.keycloak-http.service=keycloak
-    - traefik.http.routers.keycloak-http.middlewares=https-redirect
+    # - traefik.http.routers.keycloak-http.middlewares=https-redirect
     - traefik.http.routers.keycloak-https.rule=Host(`keycloak.${DOMAIN?Variable DOMAIN not set}`)
     - traefik.http.routers.keycloak-https.entrypoints=https
     - traefik.http.routers.keycloak-https.tls=true
@@ -72,6 +72,8 @@ services:
       DB_PASSWORD: ${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
       KEYCLOAK_USER: ${USERNAME?Variable USERNAME not set}
       KEYCLOAK_PASSWORD: ${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
+      KEYCLOAK_HTTP_ENABLED: "true"
+      KC_HTTP_ENABLED: "true"
 
 x-volume: &volume
   driver: local
