@@ -56,14 +56,6 @@ x-volume-driver-opts: &volume-driver-opts
   type: none
   o: bind
 
-volumes:
-  postgres_data:
-    name: postgres_data
-    <<: *volume
-    driver_opts:
-      <<: *volume-driver-opts
-      device: ${DATAPATH?Variable DATAPATH not set}/postgres/data
-
 networks:
   keycloak:
     name: keycloak
