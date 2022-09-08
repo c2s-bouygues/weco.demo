@@ -49,7 +49,7 @@ services:
       DB_PASSWORD: ${KEYCLOAK_SQL_PASSWORD?Variable KEYCLOAK_SQL_PASSWORD not set}
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD?Variable KEYCLOAK_PASSWORD not set}
-      PROXY_ADDRESS_FORWARDING: true
+      PROXY_ADDRESS_FORWARDING: "true"
 
 x-volume: &volume
   driver: local
