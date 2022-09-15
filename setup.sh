@@ -1,4 +1,4 @@
-mkdir -p ${DATAPATH?Variable DATAPATH not set}/{traefik,portainer,postgres,grafana,prometheus,alertmanager,loki,promtail,otel-collector,postgres}/{data,entrypoint,configs,certificates,logs,provisioning}
+mkdir -p ${DATAPATH?Variable DATAPATH not set}/{traefik,portainer,postgres,grafana,prometheus,alertmanager,loki,promtail,otel-collector,postgres,pulsar,pulsar-manager}/{data,entrypoint,configs,certificates,logs,provisioning}
 
 envsubst < configs/postgres.sql > ${DATAPATH?Variable DATAPATH not set}/postgres/entrypoint/init.sql
 yes | cp -rf configs/prometheus/* ${DATAPATH?Variable DATAPATH not set}/prometheus/provisioning

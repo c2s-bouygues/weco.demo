@@ -1,0 +1,103 @@
+version: '3.8'
+
+x-pulsar-manager-labels: &pulsar-manager-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=pulsar-manager
+    - traefik.http.routers.pulsar-manager-http.rule=Host(`pulsar-manager.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.pulsar-manager-http.entrypoints=http
+    - traefik.http.routers.pulsar-manager-http.service=pulsar-manager
+    - traefik.http.routers.pulsar-manager-http.middlewares=https-redirect
+    - traefik.http.routers.pulsar-manager-https.rule=Host(`pulsar-manager.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.pulsar-manager-https.entrypoints=https
+    - traefik.http.routers.pulsar-manager-https.tls=true
+    - traefik.http.routers.pulsar-manager-https.service=pulsar-manager
+    - traefik.http.routers.pulsar-manager-https.tls.certresolver=le
+    - traefik.http.services.pulsar-manager.loadbalancer.server.port=9527
+
+x-volume: &volume
+  driver: local
+x-volume-driver-opts: &volume-driver-opts
+  type: none
+  o: bind
+volumes:
+  pulsar-data:
+    name: pulsar-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/pulsar/data
+  pulsar-conf:
+    name: pulsar-conf
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/pulsar/conf
+  pulsar-manager-data:
+    name: pulsar-manager-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/pulsar-manager/data
+
+x-network: &network
+  driver: bridge
+  attachable: true
+networks:
+  pulsar:
+    name: pulsar
+    <<: *network
+
+x-service: &service
+  logging:
+    driver: json-file
+    options:
+      max-size: "100m"
+      max-file: "2"
+  restart: always
+  networks:
+    - pulsar
+
+services:
+  pulsar:
+    container_name: pulsar
+    image: apachepulsar/pulsar:2.10.1
+    ports:
+      - 6650:6650
+      - 8080:8080
+    deploy:
+      resources:
+        reservations:
+          cpus: '0.25'
+          memory: 500M
+    <<: *service
+    volumes:
+      - type: volume
+        source: pulsar-data
+        target: /pulsar/data
+      - type: volume
+        source: pulsar-conf
+        target: /pulsar/conf
+    command: bin/pulsar standalone
+    networks:
+      - pulsar
+
+  pulsar-manager:
+    container_name: pulsar-manager
+    image: apachepulsar/pulsar-manager:v0.3.0
+    deploy:
+      resources:
+        reservations:
+          cpus: '0.10'
+          memory: 100M
+      <<: *pulsar-manager-labels
+    <<: *pulsar-manager-labels
+    <<: *service
+    volumes:
+      - type: volume
+        source: pulsar-manager-data
+        target: /pulsar-manager/pulsar-manager
+    environment:
+      SPRING_CONFIGURATION_FILE: /pulsar-manager/pulsar-manager/application.properties
+    networks:
+      - pulsar

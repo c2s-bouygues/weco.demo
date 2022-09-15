@@ -77,6 +77,7 @@ services:
       - portainer
       - database
       - keycloak
+      - pulsar
 
 x-volume: &volume
   driver: local
@@ -106,6 +107,6 @@ networks:
   database:
     name: database
     <<: *network
-  keycloak:
-    name: keycloak
+  pulsar:
+    name: pulsar
     <<: *network
