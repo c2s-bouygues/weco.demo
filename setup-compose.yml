@@ -107,6 +107,9 @@ networks:
   database:
     name: database
     <<: *network
+  keycloak:
+    name: keycloak
+    <<: *network
   pulsar:
     name: pulsar
     <<: *network
