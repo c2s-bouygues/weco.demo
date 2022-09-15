@@ -32,7 +32,7 @@ volumes:
     <<: *volume
     driver_opts:
       <<: *volume-driver-opts
-      device: ${DATAPATH?Variable DATAPATH not set}/pulsar/conf
+      device: ${DATAPATH?Variable DATAPATH not set}/pulsar/configs
   pulsar-manager-data:
     name: pulsar-manager-data
     <<: *volume
