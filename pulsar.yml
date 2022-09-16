@@ -100,8 +100,6 @@ services:
         source: pulsar-conf
         target: /pulsar/conf
     command: bin/pulsar standalone
-    networks:
-      - pulsar
 
   pulsar-manager:
     container_name: pulsar-manager
@@ -120,5 +118,3 @@ services:
         target: /pulsar-manager/pulsar-manager
     environment:
       SPRING_CONFIGURATION_FILE: /pulsar-manager/pulsar-manager/application.properties
-    networks:
-      - pulsar
