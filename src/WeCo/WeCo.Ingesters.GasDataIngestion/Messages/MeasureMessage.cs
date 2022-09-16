@@ -23,7 +23,7 @@ public class MeasureMessage {
     public string DeviceName { get; set; }
 
     [JsonPropertyName("externalId")]
-    public long ExternalId { get; set; }
+    public string ExternalId { get; set; }
 
     [JsonPropertyName("type")]
     public string Type { get; set; }

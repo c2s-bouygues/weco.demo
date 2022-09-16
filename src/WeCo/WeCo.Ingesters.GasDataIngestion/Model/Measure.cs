@@ -5,7 +5,7 @@ namespace WeCo.Ingesters.GasDataIngestion.Model;
 public class Measure {
 
     [JsonPropertyName("id")]
-    public long Id { get; set; }
+    public string Id { get; set; }
 
     [JsonPropertyName("type")]
     public string Type { get; set; }

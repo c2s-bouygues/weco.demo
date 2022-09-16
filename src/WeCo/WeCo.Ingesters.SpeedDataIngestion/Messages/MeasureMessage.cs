@@ -5,7 +5,7 @@ namespace WeCo.Ingesters.SpeedDataIngestion.Messages;
 public class MeasureMessage {
 
     [JsonPropertyName("externalId")]
-    public long ExternalId { get; set; }
+    public string ExternalId { get; set; }
 
     [JsonPropertyName("type")]
     public string Type { get; set; }
