@@ -137,12 +137,12 @@ volumes:
     driver_opts:
       <<: *volume-driver-opts
       device: ${DATAPATH?Variable DATAPATH not set}/postgres/entrypoint
-  influx-data:
-    name: influx-data
+  influxdb-data:
+    name: influxdb-data
     <<: *volume
     driver_opts:
       <<: *volume-driver-opts
-      device: ${DATAPATH?Variable DATAPATH not set}/influx/data
+      device: ${DATAPATH?Variable DATAPATH not set}/influxdb/data
   influxdb-entrypoint:
     name: influxdb-entrypoint
     <<: *volume
