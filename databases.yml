@@ -4,12 +4,12 @@ x-adminer-labels: &adminer-labels
   labels:
     - traefik.enable=true
     - traefik.docker.network=database
-    - traefik.http.routers.adminer-http.rule=Host(`adminer.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable not set}`)
+    - traefik.http.routers.adminer-http.rule=Host(`adminer.${DOMAIN?Variable not set}`)
     - traefik.http.routers.adminer-http.entrypoints=http
     #- traefik.http.routers.adminer-http.middlewares=admin-auth
     - traefik.http.routers.adminer-http.service=adminer
     - traefik.http.routers.adminer-http.middlewares=https-redirect
-    - traefik.http.routers.adminer-https.rule=Host(`adminer.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable not set}`)
+    - traefik.http.routers.adminer-https.rule=Host(`adminer.${DOMAIN?Variable not set}`)
     - traefik.http.routers.adminer-https.entrypoints=https
     - traefik.http.routers.adminer-https.middlewares=admin-auth
     - traefik.http.routers.adminer-https.tls=true
@@ -21,12 +21,12 @@ x-influxdb-labels: &influxdb-labels
   labels:
     - traefik.enable=true
     - traefik.docker.network=monitoring
-    - traefik.http.routers.influxdb-http.rule=Host(`influxdb.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable not set}`)
+    - traefik.http.routers.influxdb-http.rule=Host(`influxdb.${DOMAIN?Variable not set}`)
     - traefik.http.routers.influxdb-http.entrypoints=http
     #- traefik.http.routers.influxdb-http.middlewares=admin-auth
     - traefik.http.routers.influxdb-http.service=influxdb
     - traefik.http.routers.influxdb-http.middlewares=https-redirect
-    - traefik.http.routers.influxdb-https.rule=Host(`influxdb.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable not set}`)
+    - traefik.http.routers.influxdb-https.rule=Host(`influxdb.${DOMAIN?Variable not set}`)
     - traefik.http.routers.influxdb-https.entrypoints=https
     #- traefik.http.routers.influxdb-https.middlewares=admin-auth
     - traefik.http.routers.influxdb-https.tls=true
