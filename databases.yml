@@ -17,6 +17,23 @@ x-adminer-labels: &adminer-labels
     - traefik.http.routers.adminer-https.tls.certresolver=le
     - traefik.http.services.adminer.loadbalancer.server.port=8080
 
+x-influxdb-labels: &influxdb-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=monitoring
+    - traefik.http.routers.influxdb-http.rule=Host(`influxdb.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable not set}`)
+    - traefik.http.routers.influxdb-http.entrypoints=http
+    #- traefik.http.routers.influxdb-http.middlewares=admin-auth
+    - traefik.http.routers.influxdb-http.service=influxdb
+    - traefik.http.routers.influxdb-http.middlewares=https-redirect
+    - traefik.http.routers.influxdb-https.rule=Host(`influxdb.${ADMIN_SUB_DOMAIN}${DOMAIN?Variable not set}`)
+    - traefik.http.routers.influxdb-https.entrypoints=https
+    #- traefik.http.routers.influxdb-https.middlewares=admin-auth
+    - traefik.http.routers.influxdb-https.tls=true
+    - traefik.http.routers.influxdb-https.service=influxdb
+    - traefik.http.routers.influxdb-https.tls.certresolver=le
+    - traefik.http.services.influxdb.loadbalancer.server.port=8086
+
 x-service: &service
   logging:
     driver: json-file
@@ -67,6 +84,39 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - postgres-entrypoint:/docker-entrypoint-initdb.d
+      
+  # https://hub.docker.com/_/influxdb
+  # https://docs.influxdata.com/influxdb/v2.1/install/?t=Docker
+  # https://docs.influxdata.com/influxdb/v2.1/reference/config-options/
+  # https://github.com/influxdata/community-templates/blob/master/docs/use_a_template.md
+  influxdb:
+    container_name: influxdb
+    image: influxdb:2.4
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.10'
+          memory: 250M
+      placement:
+        constraints:
+          - node.hostname == ${HOSTNAME?Variable HOSTNAME not set}
+      <<: *influxdb-labels
+    <<: *influxdb-labels
+    <<: *service
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+      - influxdb-entrypoint:/docker-entrypoint-initdb.d
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: ${USERNAME?Variable USERNAME not set}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${PASSWORD?Variable PASSWORD not set}
+      DOCKER_INFLUXDB_INIT_ORG: ${DOMAIN?Variable DOMAIN not set}
+      DOCKER_INFLUXDB_INIT_BUCKET: telegraf
+      DOCKER_INFLUXDB_INIT_RETENTION: 1w
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
+    user: root
 
 x-volume: &volume
   driver: local

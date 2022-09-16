@@ -62,6 +62,9 @@ networks:
   pulsar:
     name: pulsar
     <<: *network
+  database:
+    name: database
+    <<: *network
 
 x-service: &service
   logging:
@@ -72,6 +75,7 @@ x-service: &service
   restart: always
   networks:
     - pulsar
+    - database
 
 services:
   pulsar:
