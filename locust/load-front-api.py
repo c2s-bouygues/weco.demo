@@ -1,11 +1,10 @@
 ﻿import time
 import random
 import uuid
-from faker import Faker
+import string
+import json
 from datetime import datetime
 from locust import HttpUser, task, between
-
-fake = Faker()
 
 class WeCoUsers(HttpUser):
     # Temps d'attente moyen entre chaque task de user
@@ -21,39 +20,44 @@ class WeCoUsers(HttpUser):
         #https://egu-weco-demo-func-planes-ingester.azurewebsites.net/api/swagger/ui?#/planes/SetSpeedMeasure
         #https://egu-weco-demo-func-planes-ingester.azurewebsites.net/api/SetSpeedMeasure?code=Fuqn84rNQOSUy6falT-ZYFDQW_odxMLOUZtp8LYOevziAzFuGL1i7g==
 
-        velocityTypes = ["speed", "alt", "dir"]
-        tempTypes = ["temp", "temp_min", "temp_max"]
+        velocity_types = ["speed", "alt", "dir"]
+        temp_types = ["temp", "temp_min", "temp_max"]
+        coords = (self.rnd.random()*2.0, self.rnd.random()*2.0)
+        str_1 = ''.join(random.choice(string.ascii_lowercase) for i in range(8))
+        str_2 = ''.join((random.choice('0123456789') for i in range(5)))
 
-        newSpeedMeasure = {
-            "deviceId": uuid.uuid4(),
-            "deviceName": fake.bothify(text='????-########'),
-            "category": fake.color_name(),
+        new_speed_measure = {
+            "deviceId": str(uuid.uuid4()),
+            "deviceName": str_1 + '-' + str_2,
+            "category": "category_speed_" + str(self.rnd.randint(0, 20)),
             "coordinates": {
-                "longitude": fake.longitude(),
-                "latitude": fake.latitude()
+                "longitude": coords[0],
+                "latitude": coords[1]
             },
             "velocity": [
                 {
-                    "id": uuid.uuid4(),
-                    "type": random.choice(velocityTypes),
-                    "value": fake.random_int(min=0, max=300),
+                    "id": self.rnd.randint(0, 999999),
+                    "type": self.rnd.choice(velocity_types),
+                    "value": self.rnd.randint(0, 300),
                     "unit": "string",
-                    "timestamp": datetime.now()
+                    "timestamp": datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
                 }
             ],
             "temperatures": [
                 {
-                    "id": uuid.uuid4(),
-                    "type": random.choice(tempTypes),
-                    "value": fake.random_int(min=0, max=50),
+                    "id": self.rnd.randint(0, 999999),
+                    "type": self.rnd.choice(temp_types),
+                    "value": self.rnd.randint(0, 50),
                     "unit": "c",
-                    "timestamp": datetime.now()
+                    "timestamp": datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
                 }
             ]
         }
 
-        response = self.client.post('https://egu-weco-demo-func-planes-ingester.azurewebsites.net/api/SetSpeedMeasure?code=Fuqn84rNQOSUy6falT-ZYFDQW_odxMLOUZtp8LYOevziAzFuGL1i7g==', json=newSpeedMeasure)
-        # TODO: Check response code
+        payload = json.dumps(new_speed_measure)
+        print(payload)
+
+        self.client.post('https://egu-weco-demo-func-planes-ingester.azurewebsites.net/api/SetSpeedMeasure?code=Fuqn84rNQOSUy6falT-ZYFDQW_odxMLOUZtp8LYOevziAzFuGL1i7g==', data=payload) 
 
         time.sleep(self.rnd.randint(1, 5))
 
@@ -61,32 +65,37 @@ class WeCoUsers(HttpUser):
     def setGasMeasure(self):
         #https://egu-weco-demo-func-gas-ingester.azurewebsites.net/api/swagger/ui#/gas/SetGasMeasure
         #https://egu-weco-demo-func-gas-ingester.azurewebsites.net/api/SetGasMeasure?code=B1qYqAfbjN9j9mJXxkmOq0QUbxkzzdtOeoS8BDWyDDAEAzFumGxE6g==
-        gasTypes = ["co2", "azote", "oxygen"]
+        gas_types = ["co2", "azote", "oxygen"]
+        coords = (self.rnd.random()*2.0, self.rnd.random()*2.0)
+        str_1 = ''.join(random.choice(string.ascii_lowercase) for i in range(8))
+        str_2 = ''.join((random.choice('0123456789') for i in range(5)))
 
-        newGasMeasure = {
-            "deviceId": uuid.uuid4(),
-            "deviceName": fake.bothify(text='????-########'),
-            "category": fake.color_name(),
+        new_gas_measure = {
+            "deviceId": str(uuid.uuid4()),
+            "deviceName": str_1 + '-' + str_2,
+            "category": "category_gas_" + str(self.rnd.randint(0, 20)),
             "coordinates": {
-                "longitude": fake.longitude(),
-                "latitude": fake.latitude()
+                "longitude": coords[0],
+                "latitude": coords[1]
             },
             "measures": [
                 {
-                "id": uuid.uuid4(),
-                "type": random.choice(gasTypes),
-                "value": fake.random_int(min=0, max=500),
+                "id": str(uuid.uuid4()),
+                "type": self.rnd.choice(gas_types),
+                "value": self.rnd.randint(0, 500),
                 "unit": "ppm",
-                "timestamp": datetime.now()
+                "timestamp": datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
                 }
             ],
             "wind": {
-                "speed": fake.random_int(min=0, max=300),
-                "deg": fake.random_int(min=0, max=80)
+                "speed": self.rnd.randint(0, 300),
+                "deg": self.rnd.randint(0, 80)
             }
         }
 
-        response = self.client.post('https://egu-weco-demo-func-gas-ingester.azurewebsites.net/api/SetGasMeasure?code=B1qYqAfbjN9j9mJXxkmOq0QUbxkzzdtOeoS8BDWyDDAEAzFumGxE6g==', json=newGasMeasure)
-        # TODO: Check response code
+        payload = json.dumps(new_gas_measure)
+        print(payload)
+
+        self.client.post('https://egu-weco-demo-func-gas-ingester.azurewebsites.net/api/SetGasMeasure?code=B1qYqAfbjN9j9mJXxkmOq0QUbxkzzdtOeoS8BDWyDDAEAzFumGxE6g==', data=payload)
 
         time.sleep(self.rnd.randint(1, 5))
