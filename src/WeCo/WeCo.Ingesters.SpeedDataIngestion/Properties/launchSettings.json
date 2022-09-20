@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "WeCo.Ingesters.SpeedDataIngestion": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7241",
+      "launchBrowser": false
+    }
+  }
+}
