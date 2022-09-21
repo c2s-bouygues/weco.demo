@@ -23,7 +23,7 @@ class WeCoUsers(HttpUser):
         coords = (self.rnd.random()*2.0, self.rnd.random()*2.0)
         str_1 = ''.join(random.choice(string.ascii_lowercase) for i in range(8))
         str_2 = ''.join((random.choice('0123456789') for i in range(5)))
-        temps = [round(rnd.uniform(0, 25), 2), round(rnd.uniform(0, 25), 2), round(rnd.uniform(0, 25), 2)]
+        temps = [round(self.rnd.uniform(0, 25), 2), round(self.rnd.uniform(0, 25), 2), round(self.rnd.uniform(0, 25), 2)]
         temps.sort()
 
         new_speed_measure = {
