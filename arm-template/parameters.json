@@ -1,0 +1,42 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "serverfarms_dev_weco_app_plan_name": {
+            "value": null
+        },
+        "sites_dev_weco_demo_app_gas_to_influx_name": {
+            "value": null
+        },
+        "sites_dev_weco_demo_func_gas_ingester_name": {
+            "value": null
+        },
+        "virtualNetworks_dev_weco_demo_vnet_name": {
+            "value": null
+        },
+        "storageAccounts_devwecodemostorage_name": {
+            "value": null
+        },
+        "sshPublicKeys_dev_weco_demo_user_key_name": {
+            "value": null
+        },
+        "virtualMachines_dev_weco_demo_ubuntu_name": {
+            "value": null
+        },
+        "sites_egu_weco_demo_func_planes_ingester_name": {
+            "value": null
+        },
+        "networkInterfaces_dev_weco_demo_ubu804_name": {
+            "value": null
+        },
+        "publicIPAddresses_dev_weco_demo_ubuntu_ip_name": {
+            "value": null
+        },
+        "networkSecurityGroups_dev_weco_demo_ubuntu_nsg_name": {
+            "value": null
+        },
+        "schedules_shutdown_computevm_dev_weco_demo_ubuntu_name": {
+            "value": null
+        }
+    }
+}

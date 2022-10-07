@@ -35,6 +35,8 @@ Toutes les opérations doivent être exécutés en tant que `root` sur la machin
 Vous devez utiliser un serveur fonctionnant sous Linux.
 Pour exécuter tous les services, vous aurez besoin d'au moins 2 coeurs de processeur, 8 Go de mémoire et 20 Go d'espace disque libre.
 
+> Note : Un template ARM présent dans ce dépôt peut vous aider à monter une VM à des fins de tests. Ici : [arm-template](./arm-template/)
+
 Vous aurez également besoin d'un nom de domaine valide, pointant vers ce serveur, pour configurer automatiquement https avec [traefik](https://traefik.io) et [letsencrypt](https://letsencrypt.org).
 
 Si vous souhaitez utiliser des enregistrements DNS de type "A", vous devrez en créer au moins deux :
