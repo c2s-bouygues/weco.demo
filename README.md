@@ -2,6 +2,8 @@
 
 Ce dépôt vous donne accès à un setup basique permettant de monter rapidement l'environnement de démo, issu de l'audit WeCo, via [docker-compose](https://docs.docker.com/compose/.
 
+Pour la partie lié à la plateforme de streaming (Ingesters et ETL) un plan App Service sur Azure sera nécessaire. Ces éléments n'tant pas hostés sur la VM que nous allons mettre en place
+
 _<u>Attention :</u> Ce setup n'inclus pas de haut niveau en terme de sécurité ou [haute disponibilité](https://www.digitalocean.com/community/tutorials/what-is-high-availability). Une révision, auprès de personnes compétente, devra être effectuée après validation de l'usage des utilitaires qu'il référence, afin de définitivement clore ces sujets._
 
 ## Composants disponibles et plannifiés
@@ -11,8 +13,20 @@ _<u>Attention :</u> Ce setup n'inclus pas de haut niveau en terme de sécurité 
 * [DONE] [Traefik](https://traefik.io) : Serveur web avec autodiscovery
 * [DONE] [letsencrypt](https://letsencrypt.org) : Fournisseur de certificats SSL
 * [DONE] [Portainer](https://www.portainer.io/) : Panneau d'administration des conteneurs Docker
-* [DONE] [Grafana](https://grafana.com/) et [Prometheus](https://prometheus.io/) : Monitoring des services
-* [IN_PROGRESS] [KeyCloak](https://www.keycloak.org/) : Serveur d'authentification
+* [DONE] [Grafana](https://grafana.com/) : Monitoring des services - Construction de dashboard
+* [DONE] [Prometheus](https://prometheus.io/) et [AlertManager](https://prometheus.io/docs/alerting/latest/alertmanager/) : Monitoring des services - Collecte de métriques et paramétrage d'alertes
+* [DONE] [Loki](https://grafana.com/oss/loki/) : Monitoring des services - Collecte de logs
+* [DONE] [ZipKin](https://zipkin.io/) : Monitoring des services - Traces distribuées
+* [DONE] [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) : Monitoring des services - Collecte et distribution des logs, métriques et traces distribuées
+* [DONE] [KeyCloak](https://www.keycloak.org/) : Serveur d'authentification
+* [DONE] [InfluxDB](https://www.influxdata.com/) et [PostGreSQL](https://www.postgresql.org/) : Serveurs de bases de données
+* [DONE] [Adminer](https://www.adminer.org/) : Gestionnaire de base de données
+* [DONE] [Pulsar](https://pulsar.apache.org/fr/) et [Pulsar Manager](https://github.com/apache/pulsar-manager) : Plateforme de streaming
+
+### Applications
+* [DONE] [Noises API](https://hub.docker.com/repository/docker/xrevo/useless-soft-noises-api) et [Smokes API](https://hub.docker.com/repository/docker/xrevo/useless-soft-smokes-api) : API de démonstration envoyant des données dans la plateforme d'observabilité
+* [DONE] [Speed Data Ingester](./src/WeCo/WeCo.Ingesters.SpeedDataIngestion/) et [Gas Data Ingester](./src/WeCo/WeCo.Ingesters.GasDataIngestion/) : Ingester de données issue de Pulsar
+* [DONE] [Temperature to InfluxDB](./src/WeCo/WeCo.ETL.TemperaturesToInfluxDB/) : ETL chargé de récupérer les données rafinées et les insérer dans InfluxDB
 
 ## Mise en place
 
@@ -79,27 +93,76 @@ bash setup.sh
 ```
 
 ### 5) Lancez vos services
-
-Après avoir saisi toutes les commandes ci-dessous, vous pourrez vous connecter à vos nouveaux services via les URLs suivantes :
-* https://traefik.devops.your_domain user `votre $USERNAME` password `votre $PASSWORD`
-* https://portainer.devops.your_domain
-* https://grafana.devops.your_domain user `votre $USERNAME` password `votre $PASSWORD`
-* https://victoriametrics.devops.your_domain user `votre $USERNAME` password `votre $PASSWORD`
-
-Étapes obligatoires :
+Avant d'exécuter les commandes qui vous permettront de lancer vos services, vous devez préalablement exécuter les commandes suivantes :
 ```
 docker-compose -f setup-compose.yml up -d
+docker-compose -f databases.yml up -d
 ```
 
-A partir de maintenant, vous pouvez choisir les services dont vous avez besoin :
+#### La brique de monitoring
+Exécuter la ligne de commande suivante pour déployer les conteneurs Docker associés à la brique de monitoring :
 ```
 docker-compose -f monitoring.yml up -d
 ```
 
-Après avoir activé portainer, vous devez immédiatement vous rendre sur https://portainer.votre_domaine et définir le mot de passe administrateur :
+Puis les lignes de commande suivante pour déployer les APIs chargées de transmettre de la données à la brique de monitoring :
+```
+docker-compose -f apps.yml up -d
+```
+
+#### Portainer
+Exécuter la ligne de commande suivante pour déployer les conteneurs Docker associés à Portainer :
 ```
 docker-compose -f portainer.yml up -d
 ```
 
-### 6) Configurez les sauvegardes de votre serveur
-Au moins le dossier $DATAPATH
+#### Keycloak
+Exécuter la ligne de commande suivante pour déployer les conteneurs Docker associés au Keycloak :
+```
+docker-compose -f keycloak.yml up -d
+```
+
+#### Pulsar
+Exécuter la ligne de commande suivante pour déployer les conteneurs Docker associés à Pulsar :
+```
+docker-compose -f pulsar.yml up -d
+```
+
+Puis les lignes de commande suivante pour créer un utilisateur sur Pulsar Manager et créer les tenants, namespaces et topics, nécessaires au bon fonctionnement des Ingester :
+```
+./pulsar-manager.sh
+./pulsar.sh
+```
+
+#### Et après ?
+
+Après avoir saisi toutes les commandes précédemment citées, vous pourrez vous connecter à vos nouveaux services via les URLs suivantes :
+* https://traefik._`votre_domaine`_
+    - Utilisateur : `votre $USERNAME`
+    - Mot de passe `votre $PASSWORD`
+* https://portainer._`votre_domaine`_
+    - Utilisateur : `votre $USERNAME`
+    - Mot de passe `votre $PASSWORD`
+* https://grafana._`votre_domaine`_
+    - Utilisateur : `votre $USERNAME`
+    - Mot de passe `votre $PASSWORD`
+* https://prometheus._`votre_domaine`_
+    - Utilisateur : `votre $USERNAME`
+    - Mot de passe `votre $PASSWORD`
+* https://zipkin._`votre_domaine`_
+    - Utilisateur : `votre $USERNAME`
+    - Mot de passe `votre $PASSWORD`
+* https://influxdb._`votre_domaine`_
+    - Utilisateur : `votre $USERNAME`
+    - Mot de passe `votre $PASSWORD`
+* https://loki._`votre_domaine`_
+    - Utilisateur : `votre $USERNAME`
+    - Mot de passe `votre $PASSWORD`
+* https://keycloak._`votre_domaine`_
+    - Utilisateur : `votre $USERNAME`
+    - Mot de passe `votre $KEYCLOAK_PASSWORD`
+* https://pulsar-manager._`votre_domaine`_
+    - Utilisateur : `votre $USERNAME`
+    - Mot de passe `votre $KEYCLOAK_PASSWORD`
+
+NzRlNWZjNDNlNzg3MjdlMjBiY
