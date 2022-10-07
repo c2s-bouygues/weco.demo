@@ -1,0 +1,2 @@
+CSRF_TOKEN=$(docker exec -it pulsar-manager curl http://localhost:7750/pulsar-manager/csrf-token)
+docker exec -it pulsar-manager curl -H 'X-XSRF-TOKEN: $CSRF_TOKEN' -H 'Cookie: XSRF-TOKEN=$CSRF_TOKEN;' -H "Content-Type: application/json" -X PUT http://localhost:7750/pulsar-manager/users/superuser -d '{"name": "'$USERNAME'", "password": "'$PASSWORD'", "description": "Admin account", "email": "'$EMAIL'"}'
