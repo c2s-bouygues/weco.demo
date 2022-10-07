@@ -1,0 +1,55 @@
+{
+  "deviceId": "8Jv0XCAv",
+  "deviceName": "SPM-8Jv0XCAv",
+  "category": "speed-meter",
+  "coord": {
+    "lon": -2.3522219,
+    "lat": 48.856614
+  },
+  "velocity": [
+    {
+      "id": "a52878ff-f694-4ef0-ace1-e4b3be1b84b2",
+      "type": "speed",
+      "value": 496.76,
+      "unit": "knots",
+      "timestamp": "2022-09-15T12:24:01.103Z"
+    },
+    {
+      "id": "cee4da21-8ffa-45ff-8b75-6011ad440def",
+      "type": "alt",
+      "value": 11026,
+      "unit": "m",
+      "timestamp": "2022-09-15T12:24:01.103Z"
+    },
+    {
+      "id": "ee0acfcc-69b4-4f7c-b450-c833e74a8865",
+      "type": "dir",
+      "value": 300,
+      "unit": "deg",
+      "timestamp": "2022-09-15T12:24:01.103Z"
+    }
+  ],
+  "temperatures": [
+    {
+      "id": "9caf9878-0ba3-4d6f-83e0-0273ca8331da",
+      "type": "temp",
+      "value": 2.4,
+      "unit": "degC",
+      "timestamp": "2022-09-15T12:24:01.103Z"
+    },
+    {
+      "id": "005d5f6d-ead1-4cc7-81f4-e39c371fe5b4",
+      "type": "temp_min",
+      "value": -4.5,
+      "unit": "degC",
+      "timestamp": "2022-09-15T12:24:01.103Z"
+    },
+    {
+      "id": "9f6f9b5f-e4a2-4559-a8ed-a59269bc1ecb",
+      "type": "temp_max",
+      "value": 22.1,
+      "unit": "degC",
+      "timestamp": "2022-09-15T12:24:01.103Z"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "deviceId": "5R3GuvxB",
+  "deviceName": "GS-301-5R3GuvxB",
+  "category": "air-station",
+  "coord": { "lon": -2.3522219, "lat": 48.856614 },
+  "gas": [
+    {
+      "id": "465102a6-0700-4948-b1a1-62f4a909c463",
+      "type": "co2",
+      "value": 415.16,
+      "unit": "ppm",
+      "timestamp": "2022-09-15T12:23:56.505Z"
+    },
+    {
+      "id": "73ebb450-b2d8-49a3-9c93-c9e21c8c0c92",
+      "type": "azote",
+      "value": 78.08,
+      "unit": "%",
+      "timestamp": "2022-09-15T12:24:01.103Z"
+    },
+    {
+      "id": "84df9398-4ded-4d87-94a2-c03d2eed41c2",
+      "type": "oxygen",
+      "value": 20.96,
+      "unit": "%",
+      "timestamp": "2022-09-15T12:23:54.301Z"
+    }
+  ],
+  "main": {
+    "temp": 22.03,
+    "pressure": 1017,
+    "humidity": 9.17,
+    "temp_min": 15.6,
+    "temp_max": 26.8
+  },
+  "wind": { "speed": 16.11, "deg": 300 }
+}
