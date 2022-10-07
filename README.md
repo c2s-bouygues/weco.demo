@@ -166,9 +166,6 @@ Après avoir saisi toutes les commandes précédemment citées, vous pourrez vou
     - Utilisateur : `votre $USERNAME`
     - Mot de passe `votre $KEYCLOAK_PASSWORD`
 
-NzRlNWZjNDNlNzg3MjdlMjBiY
-NzRlNWZjNDNlNzg3MjdlMjBiY
-
 ### 6) Locust
 Concernant Locust, le mode opérateur est un peu différent.
 En effet, Locust est prévu pour être hébergé dans un environnement distinct des autres ressources, ceci pour 2 raisons : 
@@ -207,4 +204,5 @@ Une fois l'ensemble des opérations terminées, via le portail Azure, vous pourr
 
 Rendez-vous sur cette IP, sur le port *8089* et vous aurez accès à l'interface de Locust.
 
+A ce niveau, il ne nous reste plus qu'à configurer les paramètres de votre test de charge, de spécifier une url (celle de Google convient très bien, elle n'est pas utilisée dans le test...) et de démarrer !
 A ce niveau, il ne nous reste plus qu'à configurer les paramètres de votre test de charge, de spécifier une url (celle de Google convient très bien, elle n'est pas utilisée dans le test...) et de démarrer !
