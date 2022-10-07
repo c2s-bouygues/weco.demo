@@ -1,4 +1,6 @@
-mkdir -p ${DATAPATH?Variable DATAPATH not set}/{traefik,portainer,postgres,influxdb,grafana,prometheus,alertmanager,loki,promtail,otel-collector,postgres,pulsar,pulsar-manager}/{data,entrypoint,configs,certificates,logs,provisioning}
+sudo mkdir -p ${DATAPATH?Variable DATAPATH not set}/{traefik,portainer,postgres,influxdb,grafana,prometheus,alertmanager,loki,promtail,otel-collector,postgres,pulsar,pulsar-manager}/{data,entrypoint,configs,certificates,logs,provisioning}
+sudo chown -R $(whoami) ${DATAPATH?Variable DATAPATH not set}
+sudo chmod -R 777 ${DATAPATH?Variable DATAPATH not set}
 
 envsubst < configs/postgres.sql > ${DATAPATH?Variable DATAPATH not set}/postgres/entrypoint/init.sql
 yes | cp -rf configs/influxdb.sh ${DATAPATH?Variable DATAPATH not set}/influxdb/entrypoint/influxdb.sh
