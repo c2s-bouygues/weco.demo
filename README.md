@@ -208,4 +208,28 @@ Une fois l'ensemble des opérations terminées, via le portail Azure, vous pourr
 Rendez-vous sur cette IP, sur le port *8089* et vous aurez accès à l'interface de Locust.
 
 A ce niveau, il ne nous reste plus qu'à configurer les paramètres de votre test de charge, de spécifier une url (celle de Google convient très bien, elle n'est pas utilisée dans le test...) et de démarrer !
-A ce niveau, il ne nous reste plus qu'à configurer les paramètres de votre test de charge, de spécifier une url (celle de Google convient très bien, elle n'est pas utilisée dans le test...) et de démarrer !
+
+### 7) Déployez les Ingesters et l'ETL
+Tout comme pour Locust, le mode opérateur est un peu différent de celui du déploiement de la stock Docker.
+En effet, les Ingesters et ETL sont prévus pour être hébergés dans un environnement distinct des autres ressources, ceci pour 2 raisons : 
+- simuler des "véritables" outils en aval ou en amont du cluster Pulsar,
+- ne pas biaiser les performances de la plateforme de streaming
+
+Pour cela, nous avons choisi de monter l'environnement sur Azure, via des App Service Plan, hébergeant des FunctionApp et des WebApps.
+C'est une solution simple et rapide pour exécuter une ou plusieurs applications dans Azure sans avoir à gérer de machines virtuelles.
+
+Pour la création des ressources nécessaires, nous vous conseillons de vous baser sur le template ARM mentionné en début de document.
+Si vous ne voulez pas, ou ne pouvez pas, vous baser sur ce dernier, alors la configuration à avoir est la suivante :
+- Un App Service Plan de niveau S1 minimum, contenant :
+    - 2 Function App (1 pour l'ingestion des données de gaz, l'autre pour les données de vitesse des avions)
+    - 1 Web App pour l'enregistrement des données de gaz dans InfluxDb
+- 1 Compte de stockage (généralement créé en même temps que la première des 2 Function App)
+
+Le contenue final de votre ressource groupe devrait alors contenir un équivalent des ressource affichées dans la capture suivante :
+![Liste des éléments pour les Ingesters et l'ETL](./assets/rg-view.png)
+
+Vous n'avez alors plus qu'à déployez les applications depuis Visual Studio 2022 sur votre poste :
+- [WeCo.Ingesters.GasDataIngestion](./src/WeCo//WeCo.Ingesters.GasDataIngestion) sur la Function App d'ingestion des données de gaz
+- [WeCo.Ingesters.SpeedDataIngestion](./src/WeCo//WeCo.Ingesters.SpeedDataIngestion/) sur la Function App d'ingestion des données de vitesse des avions
+- [WeCo.ETL.TemperaturesToInfluxDB](./src/WeCo/WeCo.ETL.TemperaturesToInfluxDB/) sur la Web App pour l'enregistrement des données de gaz dans InfluxDb
+- [WeCo.ETL.TemperaturesToInfluxDB](./src/WeCo/WeCo.ETL.TemperaturesToInfluxDB/) sur la Web App pour l'enregistrement des données de gaz dans InfluxDb
