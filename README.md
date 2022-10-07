@@ -167,8 +167,10 @@ Après avoir saisi toutes les commandes précédemment citées, vous pourrez vou
     - Mot de passe `votre $KEYCLOAK_PASSWORD`
 * https://pulsar-manager._`votre_domaine`_
     - Utilisateur : `votre $USERNAME`
-    - Mot de passe `votre $KEYCLOAK_PASSWORD`
+    - Mot de passe `votre $PASSWORD`
 
+A l'arrivée sur le Pulsar Manager, vous serez obligé de créer un Environnement. Saisissez les informations suivantes :
+![Configuration de l'environnement local](./assets/pulsar-manager-env.png)
 ### 6) Locust
 Concernant Locust, le mode opérateur est un peu différent.
 En effet, Locust est prévu pour être hébergé dans un environnement distinct des autres ressources, ceci pour 2 raisons : 
