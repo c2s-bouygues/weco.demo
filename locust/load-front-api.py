@@ -17,9 +17,6 @@ class WeCoUsers(HttpUser):
 
     @task
     def setSpeedMeasure(self):
-        #https://egu-weco-demo-func-planes-ingester.azurewebsites.net/api/swagger/ui?#/planes/SetSpeedMeasure
-        #https://egu-weco-demo-func-planes-ingester.azurewebsites.net/api/SetSpeedMeasure?code=Fuqn84rNQOSUy6falT-ZYFDQW_odxMLOUZtp8LYOevziAzFuGL1i7g==
-
         coords = (self.rnd.random()*2.0, self.rnd.random()*2.0)
         str_1 = ''.join(random.choice(string.ascii_lowercase) for i in range(8))
         str_2 = ''.join((random.choice('0123456789') for i in range(5)))
@@ -91,8 +88,6 @@ class WeCoUsers(HttpUser):
 
     @task 
     def setGasMeasure(self):
-        #https://egu-weco-demo-func-gas-ingester.azurewebsites.net/api/swagger/ui#/gas/SetGasMeasure
-        #https://egu-weco-demo-func-gas-ingester.azurewebsites.net/api/SetGasMeasure?code=B1qYqAfbjN9j9mJXxkmOq0QUbxkzzdtOeoS8BDWyDDAEAzFumGxE6g==
         coords = (self.rnd.random()*2.0, self.rnd.random()*2.0)
         str_1 = ''.join(random.choice(string.ascii_lowercase) for i in range(8))
         str_2 = ''.join((random.choice('0123456789') for i in range(5)))

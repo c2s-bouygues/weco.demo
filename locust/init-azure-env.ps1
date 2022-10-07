@@ -1,14 +1,14 @@
 ﻿# Définition de variables pour instancier le conteneur
-$ACI_RESOURCE_GROUP = "egu-weco-demo"
+$ACI_RESOURCE_GROUP = "my-rg-name"
 
-$ACI_STORAGE_ACCOUNT_NAME = "eguwecodemostorage"
+$ACI_STORAGE_ACCOUNT_NAME = "mystorageaccountname"
 $ACI_SHARE_NAME = "locust"
 $ACI_SHARE_LOCATION = "/home/locust/"
 
 $ACI_IMAGE_NAME = "locustio/locust"
 
 $ACI_WORKERS_COUNT = 4;
-$ACI_MASTER_NAME = "egu-weco-demo-container-locust-master"
+$ACI_MASTER_NAME = $ACI_RESOURCE_GROUP + "-container-locust-master"
 $ACI_MASTER_COMMAND = "locust --locustfile /home/locust/load-front-api.py --master --expect-workers=$ACI_WORKERS_COUNT --csv=master-results"
 
 # Récupération de la clé de stockage
@@ -33,7 +33,7 @@ az container create `
 
 $ACI_MASTER_IP = az container show --resource-group $ACI_RESOURCE_GROUP --name $ACI_MASTER_NAME --query 'ipAddress.ip'
 $ACI_MASTER_IP = $ACI_MASTER_IP.Substring(1).Substring(0, $ACI_MASTER_IP.Length - 2)
-$ACI_WORKER_NAME_TEMPLATE = "egu-weco-demo-container-locust-worker-"
+$ACI_WORKER_NAME_TEMPLATE = $ACI_RESOURCE_GROUP + "-container-locust-worker-"
 $ACI_WORKER_COMMAND = "locust --locustfile /home/locust/load-front-api.py --worker --master-host=$ACI_MASTER_IP"
 
 For ($i = 0; $i -lt $ACI_WORKERS_COUNT; $i++) { 

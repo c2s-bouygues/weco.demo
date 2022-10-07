@@ -22,6 +22,7 @@ _<u>Attention :</u> Ce setup n'inclus pas de haut niveau en terme de sécurité 
 * [DONE] [InfluxDB](https://www.influxdata.com/) et [PostGreSQL](https://www.postgresql.org/) : Serveurs de bases de données
 * [DONE] [Adminer](https://www.adminer.org/) : Gestionnaire de base de données
 * [DONE] [Pulsar](https://pulsar.apache.org/fr/) et [Pulsar Manager](https://github.com/apache/pulsar-manager) : Plateforme de streaming
+* [DONE] [Locust](https://locust.io/) : Outil de test de charge
 
 ### Applications
 * [DONE] [Noises API](https://hub.docker.com/repository/docker/xrevo/useless-soft-noises-api) et [Smokes API](https://hub.docker.com/repository/docker/xrevo/useless-soft-smokes-api) : API de démonstration envoyant des données dans la plateforme d'observabilité
@@ -166,3 +167,44 @@ Après avoir saisi toutes les commandes précédemment citées, vous pourrez vou
     - Mot de passe `votre $KEYCLOAK_PASSWORD`
 
 NzRlNWZjNDNlNzg3MjdlMjBiY
+NzRlNWZjNDNlNzg3MjdlMjBiY
+
+### 6) Locust
+Concernant Locust, le mode opérateur est un peu différent.
+En effet, Locust est prévu pour être hébergé dans un environnement distinct des autres ressources, ceci pour 2 raisons : 
+- simuler un "véritable" trafic en provenance de l'extérieur
+- ne pas biaiser les performances en séparant les émetteurs de données des récepteurs
+
+Pour cela, nous avons choisi de monter l'environnement sur Azure, via des ACI (*Azure Container Instance*).
+C'est une solution simple et rapide pour exécuter un ou plusieurs conteneurs dans Azure sans avoir à gérer de machines virtuelles.
+
+Pour la création des ressources nécessaires, nous vous mettons à disposition un script PowerShell `locust/init-azure-env.ps1`. 
+Celui-ci nécessite la réalisation de quelques opérations préalable à son exécution : 
+- la création d'un groupe de ressource
+- à l'intérieur de ce dernier, la création d'un compte de stockage 
+- dans ce compte de stockage, la création d'un conteneur nommé `locust` et dans lequel vous viendrez déposer le script `load-front-api.py`
+
+> Attention, avant de déposer le script `load-front-api.py`, il est nécessaire de le modifier pour configurer les bonnes URLs vers les Azure Functions (l.88 et 141).
+
+Une fois ceci fait, vous allez pouvoir mettre à jour le script avec les bonnes valeurs : 
+- l.2 `$ACI_RESOURCE_GROUP` : le nom de votre groupe de ressource
+- l.4 `$ACI_STORAGE_ACCOUNT_NAME` : le nom du compte de stockage
+- l.5 `$ACI_SHARE_NAME` : le nom du conteneur de stockage (si vous l'avez modifié)
+- l.12 et 37 : le nom du script Python si vous l'avez modifié
+
+La dernière opération a effectué est d'ouvrir une console et d'exécuter les commandes suivantes : 
+```
+# Connexion à votre compte Azure
+az login
+# Configuration de la souscription
+az account set --subscription "subscriptionId"
+# Exécution du script
+./init-azure-env.ps1
+```
+
+Le script va créer 5 ACI : 1 *master* et 4 *workers*. 
+Une fois l'ensemble des opérations terminées, via le portail Azure, vous pourrez récupérer l'ip de l'ACI *master* (`my-rg-name-container-locust-master`).
+
+Rendez-vous sur cette IP, sur le port *8089* et vous aurez accès à l'interface de Locust.
+
+A ce niveau, il ne nous reste plus qu'à configurer les paramètres de votre test de charge, de spécifier une url (celle de Google convient très bien, elle n'est pas utilisée dans le test...) et de démarrer !
