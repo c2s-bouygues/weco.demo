@@ -36,11 +36,11 @@ namespace WeCo.Ingesters.GasDataIngestion {
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/text", bodyType: typeof(string))]
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req) {
             var raw = await req.ReadAsStringAsync(Encoding.UTF8);
-            _logger.LogInformation("Raw JSON Received : " + raw);
+            //_logger.LogInformation("Raw JSON Received : " + raw);
 
             var gas = JsonSerializer.Deserialize<Gas>(raw);
 
-            _logger.LogDebug("Send raw message", );
+            _logger.LogDebug("Send raw message");
             await _rawProducer.Send(JsonSerializer.Serialize(gas));
 
             var co2 = gas.Measures.Where(m => string.Compare(m.Type, "co2", true) == 0).FirstOrDefault();

@@ -5,6 +5,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Configurations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using WeCo.Ingesters.Shared.Options;
@@ -13,6 +14,9 @@ using WeCo.Ingesters.Shared.Producers;
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
     .ConfigureOpenApi()
+    .ConfigureLogging(builder => {
+        builder.AddApplicationInsights();
+    })
     .ConfigureServices(services => {
         services.AddSingleton<IOpenApiConfigurationOptions>(_ => {
             var options = new OpenApiConfigurationOptions() {

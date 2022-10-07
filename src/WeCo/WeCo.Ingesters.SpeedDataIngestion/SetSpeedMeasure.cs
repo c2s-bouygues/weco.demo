@@ -34,7 +34,7 @@ namespace WeCo.Ingesters.SpeedDataIngestion {
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/text", bodyType: typeof(string))]
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req) {
             var raw = await req.ReadAsStringAsync(Encoding.UTF8);
-            _logger.LogInformation("Raw JSON Received : " + raw);
+            //_logger.LogInformation("Raw JSON Received : " + raw);
 
             var speed = JsonSerializer.Deserialize<Speed>(raw);
 
